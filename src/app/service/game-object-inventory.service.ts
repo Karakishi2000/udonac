@@ -257,9 +257,9 @@ class ObjectInventory {
       const orderA = this._tempSortOrder.get(a.identifier);
       const orderB = this._tempSortOrder.get(b.identifier);
       if (orderA == null) {
-        return (orderB == null ? 0 : -1);
+        return (orderB == null ? 0 : 1);
       }
-      if (orderB == null) return 1;
+      if (orderB == null) return -1;
       if (orderA == orderB) return 0;
       return (orderA - orderB) < 0 ? -1 : 1;
     }).sort((a, b) => {
