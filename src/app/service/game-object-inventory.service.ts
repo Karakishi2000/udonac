@@ -171,6 +171,7 @@ class ObjectInventory {
   get dataTags(): string[] { return this.summarySetting.dataTags; }
 
   private _tabletopObjects: TabletopObject[] = [];
+  private _tempSortOrder: Map<string, number> = new Map();
   get tabletopObjects(): TabletopObject[] {
     if (this.needsRefreshObjects) {
       this._tabletopObjects = this.searchTabletopObjects();
@@ -253,6 +254,15 @@ class ObjectInventory {
       if (aValue > bValue) return 1;
       return 0;
     }).sort((a, b) => {
+      const orderA = this._tempSortOrder.get(a.identifier);
+      const orderB = this._tempSortOrder.get(b.identifier);
+      if (orderA == null) {
+        return (orderB == null ? 0 : -1);
+      }
+      if (orderB == null) return 1;
+      if (orderA == orderB) return 0;
+      return (orderA - orderB) < 0 ? -1 : 1;
+    }).sort((a, b) => {
       let aElm = a.rootDataElement?.getFirstElementByNameUnsensitive(sortTag);
       let bElm = b.rootDataElement?.getFirstElementByNameUnsensitive(sortTag);
       if (!aElm && !bElm) return 0;
@@ -264,6 +274,11 @@ class ObjectInventory {
       if (aValue < bValue) return sortOrder;
       if (aValue > bValue) return sortOrder * -1;
       return 0;
+    });
+
+    this._tempSortOrder.clear();
+    objects.forEach((elm, order) => {
+      this._tempSortOrder.set(elm.identifier, order);
     });
     return objects;
   }
