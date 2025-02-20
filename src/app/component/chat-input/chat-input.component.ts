@@ -429,15 +429,17 @@ export class ChatInputComponent implements OnInit, OnDestroy {
 
                   const targetName = targetCharacter.chatPalette.evaluate(command.targetName, targetCharacter.rootDataElement, delayRefs);
                   const operator = StringUtil.toHalfWidth(command.operator);
-                  const operateValue = targetCharacter.chatPalette.evaluate(command.value, targetCharacter.rootDataElement, delayRefs);
+                  let operateValue = targetCharacter.chatPalette.evaluate(command.value, targetCharacter.rootDataElement, delayRefs);
                   let oldValue: string;
                   let target: DataElement;
                   let delayRef: string;
                   let isOperateNumber = false;
                   let isOperateMaxValue = false;
+                  let isDoubleLine = false;
+                  let onlyOneLine = false;
 
                   if (target = targetCharacter.detailDataElement.getFirstElementByNameUnsensitive(targetName)) {
-                    if (target.isNumberResource || target.isSimpleNumber || target.isAbilityScore) isOperateNumber = true;
+                    if (target.isNumberResource || target.isLineResource || target.isSimpleNumber || target.isAbilityScore) isOperateNumber = true;
                   } else if (
                     target = targetCharacter.detailDataElement.getFirstElementByNameUnsensitive(targetName, /^最大/)
                     || targetCharacter.detailDataElement.getFirstElementByNameUnsensitive(targetName, /^Max[\:\_\-\s]*/i)
@@ -450,12 +452,20 @@ export class ChatInputComponent implements OnInit, OnDestroy {
                     || targetCharacter.detailDataElement.getFirstElementByNameUnsensitive(targetName, /基本値$/)
                     || targetCharacter.detailDataElement.getFirstElementByNameUnsensitive(targetName, /原点$/)
                   ) {
-                    if (target.isNumberResource || target.isAbilityScore) {
+                    if (target.isNumberResource || target.isLineResource || target.isAbilityScore) {
                       isOperateNumber = true;
                       isOperateMaxValue = true;
                     } else {
                       target = null;
                     }
+                  }
+                  
+                  if (/\d[wWｗＷ]$/.test(operateValue)){
+                    isDoubleLine = true;
+                    operateValue = operateValue.replace(/[wWｗＷ]$/, '');
+                  }else if (/\d[bBｂＢlLｌＬ]$/.test(operateValue)){
+                    onlyOneLine = true;
+                    operateValue = operateValue.replace(/[bBｂＢlLｌＬ]$/, '');
                   }
                   
                   if (!target) throw `→ コマンドエラー：${(StringUtil.cr(targetName).trim() == '') ? '(無名の変数)' : StringUtil.cr(targetName).trim()} は見つからなかった`;
@@ -530,14 +540,74 @@ export class ChatInputComponent implements OnInit, OnDestroy {
                     if (value != null && value.toString() != '') {
                       //console.log(value)
                       const dValue: number = parseInt(target.currentValue + '');
-                      const result: number = parseInt((target.currentValue && operator !== '=') ? target.currentValue.toString() : '0') + (parseInt(value) * (operator === '-' ? -1 : 1));
-                      if (result <= parseInt(target.currentValue + '')) {
-                        target.currentValue = result;
-                      } else if (result > parseInt(target.value + '') && parseInt(target.currentValue + '') < parseInt(target.value + '') && parseInt(target.value + '') != 0) {
-                        target.currentValue = target.value;
-                      } else if (result <= parseInt(target.value + '') || parseInt(target.value + '') == 0) {
-                        target.currentValue = result;
+                      let result: number = parseInt((target.currentValue && operator !== '=') ? target.currentValue.toString() : '0') + (parseInt(value) * (operator === '-' ? -1 : 1));
+                      
+                      if (result > parseInt(target.value + '') && parseInt(target.currentValue + '') <= parseInt(target.value + '') && parseInt(target.value + '') != 0) {
+                        result = parseInt(target.value + '');
                       }
+                      target.currentValue = result;
+                      
+                      delayRef = (parseInt(target.currentValue + '') - dValue).toString();
+                    } else {
+                      delayRef = '0';
+                    }
+                  } else if (target.isLineResource && !isOperateMaxValue) {
+                    if (value != null && value.toString() != '') {
+                      //console.log(value)
+                      let topLineValue: number = 0;
+                      let topLineIndex: number = -1;
+                      topLineValue = parseInt(target.currentValue + '');
+                      if(topLineValue <= 0 && target.lineNumber > 1){
+                        topLineValue = target.lineValues.find((line) => line > 0);
+                        topLineIndex = target.lineValues.findIndex((line) => line > 0);
+                      }
+                      if(!topLineValue){
+                        topLineValue = 0;
+                        topLineIndex = target.lineValues.length - 1;
+                      }
+                      
+                      const dValue: number = topLineValue;
+                      let difference: number = (parseInt(value) * (operator === '-' ? -1 : 1));
+                      
+                      if (topLineValue + difference > parseInt(target.value + '') && topLineValue <= parseInt(target.value + '') && parseInt(target.value + '') != 0) {
+                        difference = parseInt(target.value + '') - topLineValue;
+                      }
+                      
+                      if(isDoubleLine){
+                        if(topLineIndex < 0){
+                          target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        }else{
+                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        }
+                        
+                        topLineIndex = topLineIndex+1;
+                        if(topLineIndex < target.lineValues.length){
+                          topLineValue = target.lineValues[topLineIndex];
+                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        }
+                      }else if(onlyOneLine){
+                        if(topLineIndex < 0){
+                          target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        }else{
+                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        }
+                      }else{
+                        do{
+                          if(topLineIndex < 0){
+                            target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                          }else{
+                            target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                          }
+                          
+                          difference += topLineValue;
+                          
+                          topLineIndex = topLineIndex+1;
+                          if(topLineIndex < target.lineValues.length){
+                            topLineValue = target.lineValues[topLineIndex];
+                          }else break;
+                        }while(difference < 0);
+                      }
+                      
                       delayRef = (parseInt(target.currentValue + '') - dValue).toString();
                     } else {
                       delayRef = '0';
