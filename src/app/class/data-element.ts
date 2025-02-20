@@ -15,7 +15,7 @@ export class DataElement extends ObjectNode {
   @SyncVar() lineNumber: number;
   
   getLineSum() : number {
-    let lineSum = this.lineNumber > 1 ? this.lineValues.reduce((sum, line) => line ? sum + line : sum, 0) : 0;
+    let lineSum = this.lineNumber > 1 ? this.lineValues.reduce((sum, line) => line ? sum + parseInt(line.toString()) : sum, 0) : 0;
     return parseInt(this.currentValue as string) + lineSum;
   }
 
@@ -30,7 +30,7 @@ export class DataElement extends ObjectNode {
   oldLoggingValue: string;
   changeObserver: Function;
 
-  public static create(name: string, value: number | string = '', attributes: Attributes = {}, identifier: string = ''): DataElement {
+  public static create(name: string, value: number | string = '', attributes: Attributes = {}, identifier: string = '', lineValues?: number[]): DataElement {
     let dataElement: DataElement;
     if (identifier && 0 < identifier.length) {
       dataElement = new DataElement(identifier);
@@ -41,6 +41,8 @@ export class DataElement extends ObjectNode {
     dataElement.name = name;
     dataElement.value = value;
     dataElement.initialize();
+    
+    if(lineValues)dataElement.lineValues = lineValues;
 
     return dataElement;
   }
