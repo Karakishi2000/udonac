@@ -508,6 +508,7 @@ export class ChatInputComponent implements OnInit, OnDestroy {
                   //console.log(value)
                   if (value == null 
                     || (rollResult && rollResult.isDiceRollTable && rollResult.isFailure) 
+                    || (target.isLineResource && operator === '=') 
                     || (isOperateNumber && value !== '' && isNaN(value))) {
                     throw `→ ${target.name == '' ? '(無名の変数)' : target.name} を操作 → コマンドエラー：` + command.operator + command.value;
                   } else if (target.isUrl && !StringUtil.validUrl(StringUtil.cr(value))) {
@@ -579,12 +580,16 @@ export class ChatInputComponent implements OnInit, OnDestroy {
                         }else{
                           target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
                         }
-                        
-                        topLineIndex = topLineIndex+1;
-                        if(topLineIndex < target.lineValues.length){
-                          topLineValue = target.lineValues[topLineIndex];
-                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                        }
+                        do{
+                          topLineIndex += 1;
+                          if (topLineIndex < target.lineValues.length){
+                            if (target.lineValues[topLineIndex] > 0){
+                              let result = target.lineValues[topLineIndex] + difference;
+                              target.lineValues[topLineIndex] = (result > 0) ? result : 0;
+                              break;
+                            }
+                          }else break;
+                        }while(true);
                       }else if(onlyOneLine){
                         if(topLineIndex < 0){
                           target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
