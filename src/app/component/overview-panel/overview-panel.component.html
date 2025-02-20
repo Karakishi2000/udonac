@@ -296,6 +296,7 @@
       <ng-container *ngSwitchCase="'lineResource'">
         <div class="tag" style="min-width: 100px" [attr.title]="dataElm.name">{{dataElm.name}}</div>
         <div class="value">
+          <span style="font-family: Cambria, Georgia; font-size: 0.9rem;">Total: </span>
           <div style="display: inline;">{{dataElm.getLineSum()}} / {{!+dataElm.value ? '???' : dataElm.value}}</div>
         </div>
         <div class="section" style="line-height: 1em;">
