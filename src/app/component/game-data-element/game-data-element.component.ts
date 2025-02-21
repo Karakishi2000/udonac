@@ -37,6 +37,21 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
   get currentValue(): number | string { return this._currentValue == null ? '' : this._currentValue; }
   set currentValue(currentValue: number | string) { this._currentValue = currentValue; this.setUpdateTimer(); }
 
+  private _step: number = 1;
+  get step(): number { return this._step == null ? 1 : this._step; }
+  set step(step: number) { this._step = step; this.setUpdateTimer(); }
+
+  private _lineValues: number[] = [];
+  get lineValues(): number[] { return this._lineValues; }
+  set lineValues(lineValues: number[]) { this._lineValues = lineValues; this.setUpdateTimer(); }
+  
+  private _lineNumber: number = 1;
+  get lineNumber(): number { return this._lineNumber == null ? 1 : this._lineNumber; }
+  set lineNumber(lineNumber: number) { 
+    this.lineValues = [...Array(lineNumber-1)].map(() => parseInt(this.value as string));
+    this._lineNumber = lineNumber; this.setUpdateTimer();
+  }
+
   get abilityScore(): number { return this.gameDataElement.calcAbilityScore(); }
 
   get isTabletopObjectName() {
@@ -96,6 +111,10 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
 
   private updateTimer: NodeJS.Timeout = null;
 
+  myTrackBy(index: number, obj: any): any {
+    return index;
+  }
+  
   constructor(
     private changeDetector: ChangeDetectorRef,
     private modalService: ModalService
@@ -179,6 +198,9 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
     this._name = object.name;
     this._currentValue = object.currentValue;
     this._value = object.value;
+    this._step = object.step;
+    this._lineValues = object.lineValues;
+    this._lineNumber = object.lineNumber;
   }
 
   private setUpdateTimer() {
@@ -187,6 +209,9 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
       if (this.gameDataElement.name !== this.name) this.gameDataElement.name = this.name;
       if (this.gameDataElement.currentValue !== this.currentValue) this.gameDataElement.currentValue = this.currentValue;
       if (this.gameDataElement.value !== this.value) this.gameDataElement.value = this.value;
+      if (this.gameDataElement.step !== this.step) this.gameDataElement.step = this.step;
+      if (this.gameDataElement.lineValues !== this.lineValues) this.gameDataElement.lineValues = this.lineValues;
+      if (this.gameDataElement.lineNumber !== this.lineNumber) this.gameDataElement.lineNumber = this.lineNumber;
       this.updateTimer = null;
     }, 66);
   }

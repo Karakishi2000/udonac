@@ -8,9 +8,20 @@ export class DataElement extends ObjectNode {
   @SyncVar() name: string;
   @SyncVar() type: string;
   @SyncVar() currentValue: number | string;
+  
+  @SyncVar() step: number;
+  
+  @SyncVar() lineValues: number[];
+  @SyncVar() lineNumber: number;
+  
+  getLineSum() : number {
+    let lineSum = this.lineNumber > 1 ? this.lineValues.reduce((sum, line) => line ? sum + parseInt(line.toString()) : sum, 0) : 0;
+    return parseInt(this.currentValue as string) + lineSum;
+  }
 
   get isSimpleNumber(): boolean { return this.type != null && this.type === 'simpleNumber'; }
   get isNumberResource(): boolean { return this.type != null && this.type === 'numberResource'; }
+  get isLineResource(): boolean { return this.type != null && this.type === 'lineResource'; }
   get isCheckProperty(): boolean { return this.type != null && this.type === 'checkProperty'; }
   get isNote(): boolean { return this.type != null && this.type === 'note'; }
   get isAbilityScore(): boolean { return this.type != null && this.type === 'abilityScore'; }
@@ -19,7 +30,7 @@ export class DataElement extends ObjectNode {
   oldLoggingValue: string;
   changeObserver: Function;
 
-  public static create(name: string, value: number | string = '', attributes: Attributes = {}, identifier: string = ''): DataElement {
+  public static create(name: string, value: number | string = '', attributes: Attributes = {}, identifier: string = '', lineValues?: number[]): DataElement {
     let dataElement: DataElement;
     if (identifier && 0 < identifier.length) {
       dataElement = new DataElement(identifier);
@@ -30,6 +41,8 @@ export class DataElement extends ObjectNode {
     dataElement.name = name;
     dataElement.value = value;
     dataElement.initialize();
+    
+    if(lineValues)dataElement.lineValues = lineValues;
 
     return dataElement;
   }
@@ -40,6 +53,8 @@ export class DataElement extends ObjectNode {
       ret = `${this.value}`;
     } else if (this.isNumberResource) {
       ret = `${this.currentValue}/${this.value && this.value != 0 ? this.value : '???'}`;
+    } else if (this.isLineResource) {
+      ret = `${this.getLineSum()}/${this.value && this.value != 0 ? this.value : '???'}`;
     } else if (this.isCheckProperty) {
       ret = `${this.value ? ' → ✔ON' : ' → OFF'}`;
     } else if (this.isAbilityScore) {

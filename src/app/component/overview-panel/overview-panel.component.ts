@@ -73,6 +73,10 @@ export class OverviewPanelComponent implements OnChanges, AfterViewInit, OnDestr
 
   private _imageFile: ImageFile = ImageFile.Empty;
 
+  myTrackBy(index: number, obj: any): any {
+    return index;
+  }
+  
   get imageUrl(): string {
     if (!this.tabletopObject) return '';
     if (this.isUseIcon) {

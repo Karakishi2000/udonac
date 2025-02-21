@@ -67,6 +67,10 @@ export class GameObjectInventoryComponent implements OnInit, OnDestroy {
   checkMagnetic(tabletopObject: TabletopObject): boolean { return this.selectionState(tabletopObject) === SelectionState.MAGNETIC; }
   get newLineDataElement(): DataElement { return this.inventoryService.newLineDataElement; }
 
+  myTrackBy(index: number, obj: any): any {
+    return index;
+  }
+
   constructor(
     private changeDetector: ChangeDetectorRef,
     private panelService: PanelService,

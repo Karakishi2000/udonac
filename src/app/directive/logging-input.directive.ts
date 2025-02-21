@@ -122,7 +122,7 @@ export class LoggingInputDirective implements AfterViewInit, OnDestroy {
     const dataElement = this.dataElement;
     if (sendMsssage && !this.isDisable && value != oldValue) {
       let text = `${this.name == '' ? `(無名の${this.type})` : this.name} の ${dataElement.name == '' ? '(無名の変数)' : dataElement.name} を変更`;
-      if (this.showValue && (dataElement.isSimpleNumber || dataElement.isNumberResource || dataElement.isAbilityScore)) {
+      if (this.showValue && (dataElement.isSimpleNumber || dataElement.isNumberResource || dataElement.isLineResource || dataElement.isAbilityScore)) {
         text += ` ${oldValue} → ${value}`;
       } else if (dataElement.isCheckProperty) {
         text += ` ${value}`

@@ -283,14 +283,31 @@
         <div class="value">
           <div style="display: inline-block; width: min-content;">
             <div class="hidden-spacer" style="margin-right: 2em;">{{dataElm.currentValue}}</div>
-            <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" class="input" style="width:4em" type="number" size="1" [(ngModel)]="dataElm.currentValue" />
+            <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" class="input" style="width:4em" type="number" size="1" [(ngModel)]="dataElm.currentValue" step="{{dataElm.step}}" />
           </div>
           <div style="display: inline;"> / {{!+dataElm.value ? '???' : dataElm.value}}</div>
         </div>
         <div class="section" style="line-height: 1em;">
           <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.currentValue}}"
             [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.currentValue +';' | safe: 'style'"
-            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.currentValue" />
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.currentValue" step="{{dataElm.step}}" />
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'lineResource'">
+        <div class="tag" style="min-width: 100px" [attr.title]="dataElm.name">{{dataElm.name}}</div>
+        <div class="value">
+          <span style="font-family: Cambria, Georgia; font-size: 0.9rem;">Total: </span>
+          <div style="display: inline;">{{dataElm.getLineSum()}} / {{!+dataElm.value ? '???' : dataElm.value}}</div>
+        </div>
+        <div class="section" style="line-height: 1em;">
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.currentValue}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.currentValue +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.currentValue" step="{{dataElm.step}}" />
+        </div>
+        <div class="section" style="line-height: 1em;" *ngFor="let lineValue of dataElm.lineValues;let i = index;trackBy: myTrackBy" >
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValues[i]}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValues[i] +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValues[i]" step="{{dataElm.step}}" />
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'checkProperty'">
