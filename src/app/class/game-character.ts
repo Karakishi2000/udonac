@@ -113,8 +113,8 @@ export class GameCharacter extends TabletopObject {
     }
 
     let resourceElement: DataElement = DataElement.create('リソース', '', {}, 'リソース' + this.identifier);
-    let hpElement: DataElement = DataElement.create('HP', 200, { 'type': 'numberResource', 'currentValue': '200' }, 'HP_' + this.identifier);
-    let mpElement: DataElement = DataElement.create('MP', 100, { 'type': 'numberResource', 'currentValue': '100' }, 'MP_' + this.identifier);
+    let hpElement: DataElement = DataElement.create('HP', 70, { 'type': 'lineResource', 'currentValue': '70', 'step': '10', 'lineNumber':'3' }, 'HP_' + this.identifier, [70,70]);
+    let mpElement: DataElement = DataElement.create('MP', 50, { 'type': 'lineResource', 'currentValue': '50', 'step': '10', 'lineNumber':'2' }, 'MP_' + this.identifier, [50]);
 
     this.commonDataElement.appendChild(nameElement);
     this.commonDataElement.appendChild(sizeElement);
