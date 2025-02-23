@@ -48,8 +48,13 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
   private _lineNumber: number = 1;
   get lineNumber(): number { return this._lineNumber == null ? 1 : this._lineNumber; }
   set lineNumber(lineNumber: number) { 
-    this.lineValues = [...Array(lineNumber-1)].map(() => parseInt(this.value as string));
-    this._lineNumber = lineNumber; this.setUpdateTimer();
+    if(lineNumber > this.lineNumber){
+      this.lineValues.push(...Array(lineNumber-this.lineNumber).fill(parseInt(this.value as string)))
+    }else if(lineNumber < this.lineNumber){
+      this.lineValues.length = lineNumber-1;
+    }
+    this._lineNumber = lineNumber;
+    this.setUpdateTimer();
   }
 
   get abilityScore(): number { return this.gameDataElement.calcAbilityScore(); }
@@ -210,7 +215,7 @@ export class GameDataElementComponent implements OnInit, OnDestroy {
       if (this.gameDataElement.currentValue !== this.currentValue) this.gameDataElement.currentValue = this.currentValue;
       if (this.gameDataElement.value !== this.value) this.gameDataElement.value = this.value;
       if (this.gameDataElement.step !== this.step) this.gameDataElement.step = this.step;
-      if (this.gameDataElement.lineValues !== this.lineValues) this.gameDataElement.lineValues = this.lineValues;
+      if (this.gameDataElement.lineValues.toString() !== this.lineValues.toString()) this.gameDataElement.lineValues = this.lineValues;
       if (this.gameDataElement.lineNumber !== this.lineNumber) this.gameDataElement.lineNumber = this.lineNumber;
       this.updateTimer = null;
     }, 66);
