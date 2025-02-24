@@ -11,11 +11,19 @@ export class DataElement extends ObjectNode {
   
   @SyncVar() step: number;
   
-  @SyncVar() lineValues: number[];
+  // 配列だとSetterを挟めないのでSyncがうまくいかない
+  @SyncVar() lineValue2: number;
+  @SyncVar() lineValue3: number;
+  @SyncVar() lineValue4: number;
+  @SyncVar() lineValue5: number;
   @SyncVar() lineNumber: number;
   
   getLineSum() : number {
-    let lineSum = this.lineNumber > 1 ? this.lineValues.reduce((sum, line) => line ? sum + parseInt(line.toString()) : sum, 0) : 0;
+    let lineSum = 0;
+    if(this.lineNumber >= 2)lineSum += this.lineValue2;
+    if(this.lineNumber >= 3)lineSum += this.lineValue3;
+    if(this.lineNumber >= 4)lineSum += this.lineValue4;
+    if(this.lineNumber >= 5)lineSum += this.lineValue5;
     return parseInt(this.currentValue as string) + lineSum;
   }
 
@@ -42,7 +50,13 @@ export class DataElement extends ObjectNode {
     dataElement.value = value;
     dataElement.initialize();
     
-    if(lineValues)dataElement.lineValues = lineValues;
+    if(lineValues){
+      dataElement.lineNumber = lineValues.length + 1;
+      dataElement.lineValue2 = lineValues[0] ? lineValues[0] : parseInt(value as string);
+      dataElement.lineValue3 = lineValues[1] ? lineValues[1] : parseInt(value as string);
+      dataElement.lineValue4 = lineValues[2] ? lineValues[2] : parseInt(value as string);
+      dataElement.lineValue5 = lineValues[3] ? lineValues[3] : parseInt(value as string);
+    }
 
     return dataElement;
   }

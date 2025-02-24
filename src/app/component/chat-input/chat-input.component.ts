@@ -555,61 +555,37 @@ export class ChatInputComponent implements OnInit, OnDestroy {
                   } else if (target.isLineResource && !isOperateMaxValue) {
                     if (value != null && value.toString() != '') {
                       //console.log(value)
-                      let topLineValue: number = 0;
-                      let topLineIndex: number = -1;
-                      topLineValue = parseInt(target.currentValue + '');
-                      if(topLineValue <= 0 && target.lineNumber > 1){
-                        topLineValue = target.lineValues.find((line) => line > 0);
-                        topLineIndex = target.lineValues.findIndex((line) => line > 0);
-                      }
-                      if(!topLineValue){
-                        topLineValue = 0;
-                        topLineIndex = target.lineValues.length - 1;
-                      }
+                      const lineProp = ['currentValue', 'lineValue2', 'lineValue3', 'lineValue4', 'lineValue5'];
+                      let lineRemaining:string[] = [];
                       
-                      const dValue: number = topLineValue;
+                      lineProp.forEach((prop, index) =>{ if(index < target.lineNumber && parseInt(target[prop] + '') > 0) lineRemaining.push(prop); });
+                      
+                      const dValue: number = parseInt(target[lineRemaining[0]] + '');
                       let difference: number = (parseInt(value) * (operator === '-' ? -1 : 1));
                       
-                      if (topLineValue + difference > parseInt(target.value + '') && topLineValue <= parseInt(target.value + '') && parseInt(target.value + '') != 0) {
-                        difference = parseInt(target.value + '') - topLineValue;
-                      }
-                      
                       if(isDoubleLine){
-                        if(topLineIndex < 0){
-                          target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                        }else{
-                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
+                        if(lineRemaining[0]){
+                          let topLineValue = parseInt(target[lineRemaining[0]] + '') + difference;
+                          topLineValue = (topLineValue > 0) ? ((topLineValue > parseInt(target.value + '')) ? parseInt(target.value + '') : topLineValue) : 0;
+                          target[lineRemaining[0]] = topLineValue;
                         }
-                        do{
-                          topLineIndex += 1;
-                          if (topLineIndex < target.lineValues.length){
-                            if (target.lineValues[topLineIndex] > 0){
-                              let result = target.lineValues[topLineIndex] + difference;
-                              target.lineValues[topLineIndex] = (result > 0) ? result : 0;
-                              break;
-                            }
-                          }else break;
-                        }while(true);
+                        if(lineRemaining[1]){
+                          let secondLineValue = target[lineRemaining[1]] + difference;
+                          secondLineValue = (secondLineValue > 0) ? ((secondLineValue > parseInt(target.value + '')) ? parseInt(target.value + '') : secondLineValue) : 0;
+                          target[lineRemaining[1]] = secondLineValue;
+                        }
                       }else if(onlyOneLine){
-                        if(topLineIndex < 0){
-                          target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                        }else{
-                          target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                        }
+                        let topLineValue = parseInt(target[lineRemaining[0]] + '') + difference;
+                        topLineValue = (topLineValue > 0) ? ((topLineValue > parseInt(target.value + '')) ? parseInt(target.value + '') : topLineValue) : 0;
+                        target[lineRemaining[0]] = topLineValue;
                       }else{
                         do{
-                          if(topLineIndex < 0){
-                            target.currentValue = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                          }else{
-                            target.lineValues[topLineIndex] = (topLineValue + difference > 0) ? topLineValue + difference : 0;
-                          }
+                          let topLineValue = parseInt(target[lineRemaining[0]] + '') + difference;
+                          difference = topLineValue;
                           
-                          difference += topLineValue;
-                          
-                          topLineIndex = topLineIndex+1;
-                          if(topLineIndex < target.lineValues.length){
-                            topLineValue = target.lineValues[topLineIndex];
-                          }else break;
+                          topLineValue = (topLineValue > 0) ? ((topLineValue > parseInt(target.value + '')) ? parseInt(target.value + '') : topLineValue) : 0;
+                          target[lineRemaining[0]] = topLineValue;
+                          lineRemaining.shift();
                         }while(difference < 0);
                       }
                       
