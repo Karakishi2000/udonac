@@ -112,18 +112,24 @@ export class GameCharacter extends TabletopObject {
       this.imageDataElement.getFirstElementByName('imageIdentifier').value = imageIdentifier;
     }
 
-    let resourceElement: DataElement = DataElement.create('リソース', '', {}, 'リソース' + this.identifier);
-    let hpElement: DataElement = DataElement.create('HP', 70, { 'type': 'lineResource', 'currentValue': '70', 'step': '10', 'lineNumber':'3' }, 'HP_' + this.identifier, [70,70]);
-    let mpElement: DataElement = DataElement.create('MP', 50, { 'type': 'lineResource', 'currentValue': '50', 'step': '10', 'lineNumber':'2' }, 'MP_' + this.identifier, [50]);
-
     this.commonDataElement.appendChild(nameElement);
     this.commonDataElement.appendChild(sizeElement);
     this.commonDataElement.appendChild(heightElement);
     this.commonDataElement.appendChild(altitudeElement);
-
-    this.detailDataElement.appendChild(resourceElement);
-    resourceElement.appendChild(hpElement);
-    resourceElement.appendChild(mpElement);
+    
+    let apElement: DataElement = DataElement.create('AP', '', {}, 'AP' + this.identifier);
+    apElement.appendChild(DataElement.create('コア', 50, { 'type': 'lineResource', 'currentValue': '50', 'step': '10', 'lineNumber':'3' }, 'コアAP_' + this.identifier, [50,50]));
+    apElement.appendChild(DataElement.create('右腕', 50, { 'type': 'lineResource', 'currentValue': '50', 'step': '10', 'lineNumber':'2' }, '右腕AP_' + this.identifier, [50]));
+    apElement.appendChild(DataElement.create('左腕', 50, { 'type': 'lineResource', 'currentValue': '50', 'step': '10', 'lineNumber':'2' }, '左腕AP_' + this.identifier, [50]));
+    apElement.appendChild(DataElement.create('脚部', 40, { 'type': 'lineResource', 'currentValue': '40', 'step': '10', 'lineNumber':'3' }, '脚部AP_' + this.identifier, [40,40]));
+    this.detailDataElement.appendChild(apElement);
+    
+    let bulletElement: DataElement = DataElement.create('弾数', '', {}, '弾数' + this.identifier);
+    bulletElement.appendChild(DataElement.create('RA', 6, { 'type': 'lineResource', 'currentValue': '6', 'step': '1', 'lineNumber':'2' }, 'RA_' + this.identifier, [6]));
+    bulletElement.appendChild(DataElement.create('LA', 1, { 'type': 'lineResource', 'currentValue': '0', 'step': '1', 'lineNumber':'1' }, 'LA_' + this.identifier));
+    bulletElement.appendChild(DataElement.create('RB', 4, { 'type': 'lineResource', 'currentValue': '4', 'step': '1', 'lineNumber':'4' }, 'RB_' + this.identifier, [4,4,4]));
+    bulletElement.appendChild(DataElement.create('LB', 4, { 'type': 'lineResource', 'currentValue': '4', 'step': '1', 'lineNumber':'2' }, 'LB_' + this.identifier, [4]));
+    this.detailDataElement.appendChild(bulletElement);
 
     //TEST
     let testElement: DataElement = DataElement.create('情報', '', {}, '情報' + this.identifier);
@@ -159,7 +165,9 @@ export class GameCharacter extends TabletopObject {
     palette.setPalette(`チャットパレット入力例：
 2d6+1 ダイスロール
 １ｄ２０＋{敏捷}＋｛格闘｝　{name}の格闘！
-:ｈｐ-3d6 2d20KH1+{器用度}+2>=15 《{Lv1}》を使用　HP｛＄1｝
+:コア-70
+:コア-20W
+:コア-90B
 :HP={最大HP}:MP-10 HP全回復！ MP{$2}、HP{HP} → {$HP}（{$1}点回復）
 //敏捷=10+{敏捷A}
 //敏捷A=10
