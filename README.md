@@ -1,6 +1,6 @@
 # Udon-AC
 
-[ユドナリウム（Udonarium）](https://github.com/TK11235/udonarium)の私家改造版であるwithFlyのさらに改造版。
+[ユドナリウム（Udonarium）](https://github.com/TK11235/udonarium)の私家改造版である[withFly](https://github.com/NanasuNANA/UdonariumWithFly/tree/withFly)のさらに改造版。
 
 現状配布用ファイルは用意していないので、自分で配置したい場合はcloneしてbuildする必要があります。
 
