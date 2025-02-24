@@ -304,10 +304,25 @@
             [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.currentValue +';' | safe: 'style'"
             min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.currentValue" step="{{dataElm.step}}" />
         </div>
-        <div class="section" style="line-height: 1em;" *ngFor="let lineValue of dataElm.lineValues;let i = index;trackBy: myTrackBy" >
-          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValues[i]}}"
-            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValues[i] +';' | safe: 'style'"
-            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValues[i]" step="{{dataElm.step}}" />
+        <div class="section" style="line-height: 1em;" *ngIf="dataElm.lineNumber >= 2" >
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValue2}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValue2 +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValue2" step="{{dataElm.step}}" />
+        </div>
+        <div class="section" style="line-height: 1em;" *ngIf="dataElm.lineNumber >= 3" >
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValue3}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValue3 +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValue3" step="{{dataElm.step}}" />
+        </div>
+        <div class="section" style="line-height: 1em;" *ngIf="dataElm.lineNumber >= 4" >
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValue4}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValue4 +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValue4" step="{{dataElm.step}}" />
+        </div>
+        <div class="section" style="line-height: 1em;" *ngIf="dataElm.lineNumber >= 5" >
+          <input appLogging [logging.name]="name" [logging.dataElement]="dataElm" [logging.disable]="isNoLogging" type="range" title="{{dataElm.lineValue5}}"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.lineValue5 +';' | safe: 'style'"
+            min="0" max="{{!+dataElm.value ? 1000 : dataElm.value}}" [(ngModel)]="dataElm.lineValue5" step="{{dataElm.step}}" />
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'checkProperty'">

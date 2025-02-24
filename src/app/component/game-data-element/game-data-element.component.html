@@ -73,15 +73,27 @@
               <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + currentValue + ';' | safe: 'style'"
                 [(ngModel)]="currentValue" type="range" title="{{currentValue}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
             </div>
-            <div *ngFor="let lineValue of lineValues;let i = index;trackBy: myTrackBy">
-              <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + lineValues[i] + ';' | safe: 'style'"
-                [(ngModel)]="lineValues[i]" type="range" title="{{lineValues[i]}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
+            <div *ngIf="lineNumber >= 2">
+              <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + lineValue2 + ';' | safe: 'style'"
+                [(ngModel)]="lineValue2" type="range" title="{{lineValue2}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
+            </div>
+            <div *ngIf="lineNumber >= 3">
+              <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + lineValue3 + ';' | safe: 'style'"
+                [(ngModel)]="lineValue3" type="range" title="{{lineValue3}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
+            </div>
+            <div *ngIf="lineNumber >= 4">
+              <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + lineValue4 + ';' | safe: 'style'"
+                [(ngModel)]="lineValue4" type="range" title="{{lineValue4}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
+            </div>
+            <div *ngIf="lineNumber >= 5">
+              <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" [style]="'font-size: 1.0em; min-width: 90px; width: 90%; --min: 0; --max: ' + value + '; --val:' + lineValue5 + ';' | safe: 'style'"
+                [(ngModel)]="lineValue5" type="range" title="{{lineValue5}}" min="0" max="{{!isNum(value) ? 1000 : value}}" step="{{step}}" />
             </div>
             <span style="font-family: Cambria, Georgia; font-size: 1em; display: inline-block; width: 4em; margin-right: 1em; text-align: right">{{gameDataElement.getLineSum()}}</span>
             /
             <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" style="width: 5em;" size="1" type="number" [(ngModel)]="value" placeholder="Value" step="{{step}}" />
             <span style="font-family: Cambria, Georgia; font-size: 0.9rem;">Line:</span>
-            <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" style="width: 3em; text-align: right;" size="1" type="number" min="1" value="1" [(ngModel)]="lineNumber" placeholder="1" />
+            <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" style="width: 3em; text-align: right;" size="1" type="number" min="1" max="5" value="1" [(ngModel)]="lineNumber" placeholder="1" />
             <span style="font-family: Cambria, Georgia; font-size: 0.9rem;">Step:</span>
             <input appLogging [logging.name]="tabletopObjectName" [logging.dataElement]="gameDataElement" [logging.disable]="isNoLogging" style="width: 3em; text-align: right;" size="1" type="number" min="1" value="1" [(ngModel)]="step" placeholder="1" />
           </ng-container>
